@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+</head>
+<body>
+
+<table border="1">
+    <caption>Таблица пользователей:</caption>
+
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Email</th>
+        <th>Age</th>
+        <th>Role</th>
+        <th>Изменить</th>
+        <th>Удалить</th>
+        <th>Изменить роль</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="usr : ${user}">
+        <td th:text="${usr.getId()}"></td>
+        <td th:text="${usr.getUserName()}"></td>
+        <td th:text="${usr.getPassword()}"></td>
+        <td th:text="${usr.getEmail()}"></td>
+        <td th:text="${usr.getAge()}"></td>
+        <td th:text="${usr.getRoles()}"></td>
+
+        <td><a th:href="@{'/home/admin/update?id=' + ${usr.getId()}}">Update</a></td>
+        <td><a th:href="@{'/home/admin/delete?id=' + ${usr.getId()}}">Delete</a></td>
+        <td><a th:href="@{'/home/admin/edit?id=' + ${usr.getId()}}">Edit role</a></td>
+    </tr>
+    </tbody>
+</table>
+<br/>
+<form th:action="@{/logout}" th:method="POST">
+    <input type="submit" value="Logout"/>
+</form>
+<a href="/home">Home page</a>
+</body>
+</html>
