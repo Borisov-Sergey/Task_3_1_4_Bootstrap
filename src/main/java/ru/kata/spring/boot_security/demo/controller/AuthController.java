@@ -14,6 +14,7 @@ import ru.kata.spring.boot_security.demo.service.RegistrationServiceImpl;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -42,14 +43,14 @@ public class AuthController {
 
     @PostMapping("/registration")
     public String addUser(@ModelAttribute("user") User user, Model model) {
-        User userFromDb = userService.findByUserName(user.getUserName());
+        User userFromDbByName = userService.findByUserName(user.getUserName());
+        User userFromDbByEmail = userService.findByEmail(user.getEmail());
 
-        if (userFromDb != null) {
+        if (userFromDbByName != null || userFromDbByEmail != null) {
             model.addAttribute("message", "User exists!");
             return "registration";
         }
 
-        user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
         registrationService.register(user);
 

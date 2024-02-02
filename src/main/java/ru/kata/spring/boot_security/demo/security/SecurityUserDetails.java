@@ -9,7 +9,6 @@ import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.Collection;
 
-
 public class SecurityUserDetails implements UserDetails {
     private final User user;
 

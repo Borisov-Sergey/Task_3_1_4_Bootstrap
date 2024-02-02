@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -25,10 +26,11 @@ public class User {
     private String userName;
 
     @Column
-    private String password;
+    private String lastName;
 
     @Column
-    private boolean active;
+    private String password;
+
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_rule", joinColumns = @JoinColumn(name = "user_id"))
@@ -38,7 +40,8 @@ public class User {
     public User() {
     }
 
-    public User(String email, int age, String userName) {
+    public User(String email, int age, String userName, String lastName) {
+        this.lastName = lastName;
         this.email = email;
         this.age = age;
         this.userName = userName;
@@ -50,14 +53,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public Set<Role> getRoles() {
@@ -100,16 +95,37 @@ public class User {
         this.userName = userName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", email=" + email +
+                ", email='" + email + '\'' +
                 ", age=" + age +
-                ", userName=" + userName +
-                ", password=" + password +
-                ", active=" + active +
+                ", userName='" + userName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(userName, user.userName) && Objects.equals(lastName, user.lastName) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, age, userName, lastName, password, roles);
     }
 }

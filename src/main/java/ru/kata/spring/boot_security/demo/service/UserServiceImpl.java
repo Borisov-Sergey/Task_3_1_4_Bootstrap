@@ -2,15 +2,13 @@ package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserDao;
-import ru.kata.spring.boot_security.demo.security.SecurityUserDetails;
+import ru.kata.spring.boot_security.demo.security.AuthProvider;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +18,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthProvider authProvider;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDao userDao, AuthProvider authProvider) {
         this.userDao = userDao;
-        this.passwordEncoder = passwordEncoder;
+        this.authProvider = authProvider;
     }
 
     @Override
@@ -43,12 +41,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasAuthority('ADMIN')")
     public void update(User user) {
-
-        if (Optional.ofNullable(user.getPassword()).isEmpty()) {
+        if (ObjectUtils.isEmpty(user.getPassword())) {
             userDao.findById(user.getId()).map(User::getPassword).ifPresent(user::setPassword);
             userDao.save(user);
+            return;
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(authProvider.getPasswordEncoder().encode(user.getPassword()));
         userDao.save(user);
     }
 
@@ -68,6 +66,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUserName(String username) {
         return userDao.findByUserName(username);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userDao.findByEmail(email);
     }
 
 }

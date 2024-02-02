@@ -6,22 +6,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserDao;
+import ru.kata.spring.boot_security.demo.security.AuthProvider;
 
 @Service
 public class RegistrationServiceImpl {
 
     private final UserDao userDao;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthProvider authProvider;
 
     @Autowired
-    public RegistrationServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public RegistrationServiceImpl(UserDao userDao, AuthProvider authProvider) {
         this.userDao = userDao;
-        this.passwordEncoder = passwordEncoder;
+        this.authProvider = authProvider;
     }
 
     @Transactional
     public void register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(authProvider.getPasswordEncoder().encode(user.getPassword()));
         userDao.save(user);
     }
 

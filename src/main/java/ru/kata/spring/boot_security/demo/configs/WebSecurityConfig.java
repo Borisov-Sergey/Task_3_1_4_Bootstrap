@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.configs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.kata.spring.boot_security.demo.security.AuthProvider;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceDetailsImpl;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
@@ -19,12 +21,13 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserServiceDetailsImpl userService;
+    private final AuthProvider authProvider;
     private final SuccessUserHandler successUserHandler;
 
 
-    public WebSecurityConfig(UserServiceDetailsImpl userService, SuccessUserHandler successUserHandler) {
-        this.userService = userService;
+    @Autowired
+    public WebSecurityConfig(UserServiceDetailsImpl userService, AuthProvider authProvider, SuccessUserHandler successUserHandler) {
+        this.authProvider = authProvider;
         this.successUserHandler = successUserHandler;
     }
 
@@ -45,13 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
-                .passwordEncoder(getPasswordEncoder());
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authProvider);
     }
 
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
