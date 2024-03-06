@@ -29,7 +29,7 @@
             <ul class="nav nav-pills flex-column">
                 <div th:if="${roleBoolean}">
                     <li class="nav-item">
-                        <a href="/admin" class="nav-link active">Admin</a>
+                        <a href="/user/admin" class="nav-link active">Admin</a>
                     </li>
                 </div>
                 <li class="nav-item">
@@ -127,7 +127,7 @@
 
                                                                 <div class="modal-body text-center">
 
-                                                                    <form th:action="@{'/admin/update?id=' + ${user.id}}"
+                                                                    <form th:action="@{'/user/update?id=' + ${user.id}}"
                                                                           th:object="${user}" method="post"
                                                                           th:id="${'updateForm' + user.id}">
                                                                         <div class="form-group">
@@ -196,10 +196,10 @@
                                                                             <select multiple size="2"
                                                                                     class="form-control"
                                                                                     id="updateRoles"
-                                                                                    name="roles"
+                                                                                    name="rls"
                                                                                     required>
                                                                                 <option
-                                                                                        th:each="rl : ${roles}"
+                                                                                        th:each="rl : ${allRoles}"
                                                                                         th:value="${rl.name}"
                                                                                         th:text="${rl.name}"
                                                                                         th:selected="${user.roles.contains(rl)}">
@@ -239,7 +239,7 @@
 
                                                                 <div class="modal-body text-center">
 
-                                                                    <form th:action="@{'/admin/delete?id=' + ${user.id}}"
+                                                                    <form th:action="@{'/user/delete?id=' + ${user.id}}"
                                                                           th:object="${user}" method="post"
                                                                           th:id="${'delForm' + user.id}">
 
@@ -294,8 +294,8 @@
                                                                                     disabled>
                                                                                 <option
                                                                                         th:each="rl : ${user.roles}"
-                                                                                        th:value="${rl.name()}"
-                                                                                        th:text="${rl.name()}">
+                                                                                        th:value="${rl.name}"
+                                                                                        th:text="${rl.name}">
                                                                                 </option>
                                                                             </select>
                                                                         </div>
@@ -328,8 +328,7 @@
                                         <div class="row">
                                             <div class="col-4"></div>
                                             <div class="col-4">
-                                                <form th:action="@{/admin/new}" th:object="${newUser}" method="post">
-
+                                                <form th:action="@{/user/save}" th:object="${newUser}" method="post">
                                                     <div class="form-group font-weight-bold">
                                                         <label for="name">Username</label>
                                                         <input type="text"
@@ -380,10 +379,10 @@
                                                         <select multiple size="2"
                                                                 class="form-control"
                                                                 id="roles"
-                                                                name="roles"
+                                                                name="rlss"
                                                                 required>
                                                             <option
-                                                                    th:each="rl : ${roles}"
+                                                                    th:each="rl : ${allRoles}"
                                                                     th:value="${rl.name}"
                                                                     th:text="${rl.name}">
                                                             </option>

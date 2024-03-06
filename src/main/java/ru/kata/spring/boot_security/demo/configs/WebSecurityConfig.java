@@ -26,7 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    public WebSecurityConfig(UserServiceDetailsImpl userService, AuthProvider authProvider, SuccessUserHandler successUserHandler) {
+    public WebSecurityConfig( AuthProvider authProvider, SuccessUserHandler successUserHandler) {
         this.authProvider = authProvider;
         this.successUserHandler = successUserHandler;
     }
